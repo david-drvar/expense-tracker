@@ -44,11 +44,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _userTransactions = [
-    // Transaction(
-    //     id: 't1', title: 'new shoes', amount: 6999, date: DateTime.now()),
-    // Transaction(id: 't2', title: 'new pc', amount: 6999, date: DateTime.now())
-  ];
+  final List<Transaction> _userTransactions = [];
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
@@ -67,6 +63,28 @@ class _MyHomePageState extends State<MyHomePage> {
       _userTransactions.add(newTx);
       // cannot do _userTransaction = ..., cause it's final, but add you can do
     });
+  }
+
+  void _editTransaction(String title, double amount, DateTime date, String id) {
+      setState(() {
+      Transaction old = _userTransactions.singleWhere((tx) => tx.id == id); //it shoudl be id
+      old.title = title;
+      old.amount = amount;
+      old.date = date;
+    });
+  }
+
+  void _startEditTransaction(BuildContext ctx, String id, String title, DateTime date, double amount) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            //not neccessary in my version of Flutter
+            child: NewTransaction(_editTransaction,id, title, date, amount),
+            onTap: () {},
+            behavior: HitTestBehavior.opaque,
+          );
+        });
   }
 
   void _deleteTransaction(String id) {
@@ -109,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Chart(_recentTransactions),
           Expanded(
-            child: TransactionList(_userTransactions, _deleteTransaction),
+            child: TransactionList(_userTransactions, _deleteTransaction, _startEditTransaction),
           ),
         ],
       ),

@@ -6,8 +6,11 @@ class TransactionList extends StatelessWidget {
   //list of all transactions so far
   final List<Transaction> transactions;
   final Function deleteTx;
+  final Function startEdit;
 
-  TransactionList(this.transactions, this.deleteTx);
+  TransactionList(this.transactions, this.deleteTx, this.startEdit);
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +44,25 @@ class TransactionList extends StatelessWidget {
                       content: Text("Transaction deleted"),
                     ));
                   },
-                  background: Card(
-                    color: Colors.red,
-                    elevation: 5,
+                  background: Container(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-                    child: ListTile(),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: AlignmentDirectional.centerStart,
+                    color: Colors.red,
+                    child: Icon(Icons.delete, color: Colors.white,),
                   ),
                   secondaryBackground: Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                     color: Colors.red,
-                    child: Icon(Icons.cancel),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Icon(Icons.delete, color: Colors.white,),
                   ),
                   child: Card(
                     elevation: 5,
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                     child: ListTile(
-                      onLongPress: () {},
+                      onLongPress: () => startEdit(context, transactions[index].id, transactions[index].title, transactions[index].date, transactions[index].amount),
                       leading: CircleAvatar(
                         radius: 30,
                         child: Padding(
@@ -71,13 +78,13 @@ class TransactionList extends StatelessWidget {
                       ),
                       subtitle: Text(
                           DateFormat.yMMMd().format(transactions[index].date)),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).errorColor,
-                        ),
-                        onPressed: () => deleteTx(transactions[index].id),
-                      ),
+                      // trailing: IconButton(
+                      //   icon: Icon(
+                      //     Icons.delete,
+                      //     color: Theme.of(context).errorColor,
+                      //   ),
+                      //   onPressed: () => deleteTx(transactions[index].id),
+                      // ),
                     ),
                   ),
                 );
