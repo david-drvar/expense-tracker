@@ -9,19 +9,12 @@ class Chart extends StatelessWidget {
   Chart(this.recentTransactions);
 
   List<Map<String, Object>> get groupTransactionsValues {
-    //mapa sadrzi samo JEDAN dan i iznos, a lista 7 za svaki dan u nedelji
+    //a map containts only 1 day and amount, while a list 7 for every day in the week
     return List.generate(7, (index) {
       final weekDay = DateTime.now()
-          .subtract(Duration(days: index)); //GENERATE DIFFERENT DAYS!
+          .subtract(Duration(days: index)); //GENERATES DIFFERENT DAYS!
 
       var totalSum = 0.0;
-      // for (Transaction t in recentTransactions) {
-      //   if (t.date.day == weekDay.day &&
-      //       t.date.month == weekDay.month &&
-      //       t.date.year == weekDay.year) {
-      //     totalSum += t.amount;
-      //   }
-      // }
 
       for (var i = 0; i < recentTransactions.length; i++) {
         if (recentTransactions[i].date.day == weekDay.day &&
@@ -51,7 +44,7 @@ class Chart extends StatelessWidget {
     print(groupTransactionsValues);
     return Card(
       elevation: 6,
-      margin: EdgeInsets.all(20),
+      margin: EdgeInsets.all(5),
       child: Padding(
         padding: EdgeInsets.all(5),
         child: Row(

@@ -18,8 +18,10 @@ class _NewTransactionState extends State<NewTransaction> {
 
   void _submitData() {
     if (_titleController.text.isNotEmpty &&
-        double.parse(_amountController.text) > 0 && _selectedDate!=null)
-      widget.addTx(_titleController.text, double.parse(_amountController.text), _selectedDate);
+        double.parse(_amountController.text) > 0 &&
+        _selectedDate != null)
+      widget.addTx(_titleController.text, double.parse(_amountController.text),
+          _selectedDate);
 
     // widget.addTx(            FOR SOME REASON THIS BLOCK CASES DOUBLE ADD TO THE TX_LIST
     // titleController.text,
@@ -57,24 +59,17 @@ class _NewTransactionState extends State<NewTransaction> {
           children: <Widget>[
             TextField(
               decoration: InputDecoration(labelText: 'Title'),
-              // onChanged: (value) {
-              //   titleInput = value;
-              // },
               controller: _titleController,
             ),
             TextField(
               decoration: InputDecoration(labelText: 'Amount'),
-              // onChanged: (value) {
-              //   amountInput = value;
-              // },
               controller: _amountController,
               keyboardType: TextInputType.number,
               onSubmitted: (_) =>
                   _submitData(), //convention '_', I get an argument but I dont use it
             ),
             Container(
-              height:
-                  70, //cannot add it to row because row doesn't have height property
+              height: 70, //cannot add it to row because row doesn't have height property
               child: Row(
                 children: <Widget>[
                   Expanded(

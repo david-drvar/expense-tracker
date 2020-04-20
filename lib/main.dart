@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Personal Expenses',
       theme: ThemeData(
           primarySwatch: Colors
-              .yellow, //primary color is one single color and primarySwatch is based on primary but generates many different shades
+              .indigo, //primary color is one single color and primarySwatch is based on primary but generates many different shades
           errorColor: Colors.red,
           accentColor: Colors.grey,
           fontFamily: 'Quicksand',
@@ -32,18 +32,13 @@ class MyApp extends StatelessWidget {
                   title: TextStyle(
                       fontFamily: 'OpenSans',
                       fontSize: 20,
-                      color: Colors.black)))),
+                      color: Colors.white)))),
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  // String titleInput; //input is always String!
-  // String amountInput; //we can have no-final vars because we don't have to update our interface
-  // final titleController = TextEditingController(); //BETTER ALTERNATIVE!
-  // final amountController = TextEditingController();
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -76,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _deleteTransaction(String id) {
     setState(() {
-      _userTransactions.removeWhere((tx) => tx.id==id); 
+      _userTransactions.removeWhere((tx) => tx.id == id);
     });
   }
 
@@ -109,8 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          SizedBox(
+            height: 10,
+          ),
           Chart(_recentTransactions),
-          TransactionList(_userTransactions, _deleteTransaction),
+          Expanded(
+            child: TransactionList(_userTransactions, _deleteTransaction),
+          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
