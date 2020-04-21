@@ -66,21 +66,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _editTransaction(String title, double amount, DateTime date, String id) {
-      setState(() {
-      Transaction old = _userTransactions.singleWhere((tx) => tx.id == id); //it shoudl be id
+    setState(() {
+      Transaction old =
+          _userTransactions.singleWhere((tx) => tx.id == id); //it shoudl be id
       old.title = title;
       old.amount = amount;
       old.date = date;
     });
   }
 
-  void _startEditTransaction(BuildContext ctx, String id, String title, DateTime date, double amount) {
+  void _startEditTransaction(
+      BuildContext ctx, String id, String title, DateTime date, double amount) {
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
           return GestureDetector(
             //not neccessary in my version of Flutter
-            child: NewTransaction(_editTransaction,id, title, date, amount),
+            child: NewTransaction(_editTransaction, id, title, date, amount),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
@@ -108,16 +110,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      //store it in object so we can access it's size
+      title: Text('Personal Expenses'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Personal Expenses'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,9 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             height: 10,
           ),
-          Chart(_recentTransactions),
+          Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.3,
+              child: Chart(_recentTransactions)),
           Expanded(
-            child: TransactionList(_userTransactions, _deleteTransaction, _startEditTransaction),
+            child: Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.7,
+                child: TransactionList(_userTransactions, _deleteTransaction,
+                    _startEditTransaction)),
           ),
         ],
       ),
