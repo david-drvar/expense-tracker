@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,7 +37,7 @@ class _NewTransactionState extends State<NewTransaction> {
             double.parse(_amountController.text), _selectedDate);
     } else {
       if (_titleController.text.isNotEmpty &&
-          double.parse(_amountController.text) > 0) 
+          double.parse(_amountController.text) > 0)
         widget.addTx(_titleController.text,
             double.parse(_amountController.text), widget.date, widget.id);
     }
@@ -70,57 +73,75 @@ class _NewTransactionState extends State<NewTransaction> {
       flag = true;
     }
 
-    return Card(
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: _titleController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              onSubmitted: (_) =>
-                  _submitData(), //convention '_', I get an argument but I dont use it
-            ),
-            Container(
-              height:
-                  70, //cannot add it to row because row doesn't have height property
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: widget.date == null //a huge mess
-                          ? Text(_selectedDate == null
-                              ? 'No Date Chosen'
-                              : 'Picked date ' +
-                                  DateFormat.yMd().format(_selectedDate))
-                          : Text(_selectedDate == null
-                              ? 'Picked date ' +
-                                  DateFormat.yMd().format(widget.date)
-                              : 'Picked date ' +
-                                  DateFormat.yMd().format(_selectedDate))),
-                  FlatButton(
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: _presentDatePicker,
-                  )
-                ],
+    return SingleChildScrollView(
+      //make it scrollable so user can reach the input field
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: _titleController,
               ),
-            ),
-            RaisedButton(
-              child: Text('Add transaction'),
-              onPressed: _submitData,
-              textColor: Colors.black,
-            )
-          ],
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                onSubmitted: (_) =>
+                    _submitData(), //convention '_', I get an argument but I dont use it
+              ),
+              Container(
+                height:
+                    70, //cannot add it to row because row doesn't have height property
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: widget.date == null //a huge mess
+                            ? Text(_selectedDate == null
+                                ? 'No Date Chosen'
+                                : 'Picked date ' +
+                                    DateFormat.yMd().format(_selectedDate))
+                            : Text(_selectedDate == null
+                                ? 'Picked date ' +
+                                    DateFormat.yMd().format(widget.date)
+                                : 'Picked date ' +
+                                    DateFormat.yMd().format(_selectedDate))),
+                    Platform.isIOS
+                        ? CupertinoButton(
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                            onPressed: _presentDatePicker,
+                          )
+                        : FlatButton(
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                            textColor: Theme.of(context).primaryColor,
+                            onPressed: _presentDatePicker,
+                          )
+                  ],
+                ),
+              ),
+              RaisedButton(
+                child: Text('Add transaction'),
+                onPressed: _submitData,
+                textColor: Colors.black,
+              )
+            ],
+          ),
         ),
       ),
     );
