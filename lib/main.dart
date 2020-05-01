@@ -120,12 +120,49 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+  List<Widget> _buildLandscapeContent(AppBar appBar, Widget txListWidget) {
+    return [
+      Row(
+        //switch should only generate in landscape mode
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Text('Show chart', style: Theme.of(context).textTheme.title),
+          Switch.adaptive(
+            activeColor: Theme.of(context).primaryColor,
+            value: _showChart,
+            onChanged: (newValue) {
+              setState(() {
+                _showChart = newValue;
+              });
+            },
+          )
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions))
+          : txListWidget,
+    ];
+  }
 
-    final PreferredSizeWidget appBar = Platform.isIOS
+  List<Widget> _buildPortraitContent(AppBar appBar, Widget txListWidget) {
+    return [
+      Container(
+          height: (MediaQuery.of(context).size.height -
+                  appBar.preferredSize.height -
+                  MediaQuery.of(context).padding.top) *
+              0.3,
+          child: Chart(_recentTransactions)),
+      txListWidget
+    ];
+  }
+
+  Widget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Personal Expenses'),
             trailing: Row(
@@ -148,8 +185,16 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           );
+  }
 
-    final TxListWidget = Expanded(
+  @override
+  Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final PreferredSizeWidget appBar = _buildAppBar();
+
+    final txListWidget = Expanded(
       child: Container(
           height: (MediaQuery.of(context).size.height -
                   appBar.preferredSize.height -
@@ -164,43 +209,11 @@ class _MyHomePageState extends State<MyHomePage> {
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          if (isLandscape)
-            Row(
-              //switch should only generate in landscape mode
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text('Show chart', style: Theme.of(context).textTheme.title),
-                Switch.adaptive(
-                  activeColor: Theme.of(context).primaryColor,
-                  value: _showChart,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _showChart = newValue;
-                    });
-                  },
-                )
-              ],
-            ),
+          if (isLandscape) ..._buildLandscapeContent(appBar, txListWidget),
           SizedBox(
             height: 10,
           ),
-          if (!isLandscape)
-            Container(
-                height: (MediaQuery.of(context).size.height -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions)),
-          if (!isLandscape) TxListWidget,
-          if (isLandscape)
-            _showChart
-                ? Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions))
-                : TxListWidget,
+          if (!isLandscape) ..._buildPortraitContent(appBar, txListWidget),
         ],
       ),
     );

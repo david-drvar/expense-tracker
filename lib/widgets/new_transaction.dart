@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expense_tracker/widgets/adaptive_flat_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,14 +23,32 @@ class NewTransaction extends StatefulWidget {
   _NewTransactionState createState() => _NewTransactionState();
 }
 
-class _NewTransactionState extends State<NewTransaction> {
+class _NewTransactionState extends State<NewTransaction> with WidgetsBindingObserver {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime _selectedDate;
   bool flag = false;
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this); //adding listener
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    
+    super.didChangeAppLifecycleState(state);
+  }
+  
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); //remove listener
+    super.dispose();
+  }
+
   void _submitData() {
-    if (widget.id == null) {
+    if (widget.id == null) {  //if it's a new object
       if (_titleController.text.isNotEmpty &&
           double.parse(_amountController.text) > 0 &&
           _selectedDate != null)
@@ -93,8 +112,8 @@ class _NewTransactionState extends State<NewTransaction> {
                 decoration: InputDecoration(labelText: 'Amount'),
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                onSubmitted: (_) =>
-                    _submitData(), //convention '_', I get an argument but I dont use it
+                // onSubmitted: (_) =>
+                //     _submitData(), //convention '_', I get an argument but I dont use it
               ),
               Container(
                 height:
@@ -112,26 +131,7 @@ class _NewTransactionState extends State<NewTransaction> {
                                     DateFormat.yMd().format(widget.date)
                                 : 'Picked date ' +
                                     DateFormat.yMd().format(_selectedDate))),
-                    Platform.isIOS
-                        ? CupertinoButton(
-                            child: Text(
-                              'Choose Date',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                            onPressed: _presentDatePicker,
-                          )
-                        : FlatButton(
-                            child: Text(
-                              'Choose Date',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                            textColor: Theme.of(context).primaryColor,
-                            onPressed: _presentDatePicker,
-                          )
+                    AdaptiveFlatButton('Choose date', _presentDatePicker)
                   ],
                 ),
               ),
